@@ -1,6 +1,6 @@
 {
 	"name": "@_scavengers/cli",
-	"version": "0.2.3",
+	"version": "0.2.2",
 	"description": "Scavenger CLI - Track and manage all backlinks in your project",
 	"bin": {
 		"scavengers": "./bin/index.js",
