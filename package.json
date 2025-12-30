@@ -1,6 +1,6 @@
 {
 	"name": "@_scavengers/cli",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Raccoon ASCII art generator - placeholder for @scavengers",
 	"bin": "./bin/index.js",
 	"files": [
