@@ -7,7 +7,30 @@ const args = process.argv.slice(2);
 const command = args[0];
 const subcommand = args[1];
 
-const RACCOON = `
+// ANSI color codes
+const colors = {
+  reset: "\x1b[0m",
+  bright: "\x1b[1m",
+  // Bright colors for art
+  red: "\x1b[91m",
+  green: "\x1b[92m",
+  yellow: "\x1b[93m",
+  blue: "\x1b[94m",
+  magenta: "\x1b[95m",
+  cyan: "\x1b[96m",
+  white: "\x1b[97m",
+};
+
+const brightColors = ["red", "green", "yellow", "blue", "magenta", "cyan"];
+
+function randomColor() {
+  return colors[brightColors[Math.floor(Math.random() * brightColors.length)]];
+}
+
+// ASCII Animals
+const ANIMALS = [
+  // Raccoon
+  `
        /\\     /\\
       /  \\___/  \\
      / ◈ ═══ ◈  \\
@@ -18,10 +41,78 @@ const RACCOON = `
      ╲_________╱
     ╱│░░░░░░░░│╲
    ╱ │▓▓▓▓▓▓▓▓│ ╲
-  ╱══╧════════╧══╲
-`;
+  ╱══╧════════╧══╲`,
+  // Fox
+  `
+      /\\   /\\
+     /  \\_/  \\
+    / ●     ● \\
+   /    ___    \\
+   \\   /   \\   /
+    \\_|  ◡  |_/
+      |     |
+     /|     |\\
+    / |_____| \\
+   /   \\   /   \\`,
+  // Owl
+  `
+     ___________
+    /   _   _   \\
+   |  (◉) (◉)  |
+   |     <     |
+   |   \\___/   |
+    \\  |   |  /
+     \\_|___|_/
+       || ||
+      _|| ||_
+     (__) (__)`,
+  // Cat
+  `
+      /\\_____/\\
+     /  o   o  \\
+    ( ==  ^  == )
+     )         (
+    (           )
+   ( (  )   (  ) )
+  (__(__)___(__)__)`,
+  // Wolf
+  `
+        /\\      /\\
+       /  \\    /  \\
+      /    \\__/    \\
+     |  ◈       ◈  |
+     |      __     |
+      \\    /  \\   /
+       \\  | ◡◡ | /
+        \\_|____|_/
+          /    \\
+         /      \\`,
+  // Bear
+  `
+     ʕ·͡ᴥ·ʔ━━━━━╗
+     │ SCAV  ║
+     │ ENGER ║
+     ╰━━━━━━━╝
+      /|    |\\
+     / |    | \\
+    (__\\ /\\/__) `,
+  // Possum
+  `
+       _.---._
+      /       \\
+     | ◕   ◕  |
+     |    △   |
+      \\ \\___/ /
+       '.___.'
+      /|     |\\
+     (_|     |_)
+       \\     /
+        \\   /`,
+];
 
 const SCAVENGERS_FILE = "scavengers.json";
+const DOMAIN = "scavenger.bot";
+const VERSION = "0.2.3";
 
 // Find project root (where package.json is)
 function findProjectRoot() {
@@ -143,21 +234,23 @@ function scanProject(projectRoot) {
   return links;
 }
 
-// Create or load scavengers.json
-function loadOrCreateScavengers(projectRoot) {
+// Create or load scavengers.json (silent mode available)
+function loadOrCreateScavengers(projectRoot, silent = false) {
   const scavengersPath = path.join(projectRoot, SCAVENGERS_FILE);
 
   if (fs.existsSync(scavengersPath)) {
     try {
       return JSON.parse(fs.readFileSync(scavengersPath, "utf8"));
     } catch {
-      console.log("  ⚠️  Corrupted scavengers.json, regenerating...");
+      if (!silent) console.log("  ⚠️  Corrupted scavengers.json, regenerating...");
     }
   }
 
   // First run - scan and create
-  console.log(RACCOON);
-  console.log("  🔍 First run detected! Scanning project for links...\n");
+  if (!silent) {
+    console.log(randomColor() + ANIMALS[0] + colors.reset);
+    console.log("  🔍 First run detected! Scanning project for links...\n");
+  }
 
   const links = scanProject(projectRoot);
   const totalOutbound = Object.values(links.outbound).flat().length;
@@ -178,17 +271,35 @@ function loadOrCreateScavengers(projectRoot) {
 
   fs.writeFileSync(scavengersPath, JSON.stringify(scavengers, null, 2));
 
-  console.log(`  ✅ Created ${SCAVENGERS_FILE}`);
-  console.log(`  📊 Found ${totalOutbound} outbound links across ${Object.keys(links.outbound).length} domains`);
-  console.log(`  🖼️  Found ${links.assets.length} asset links`);
-  console.log(`  🔗 Found ${links.internal.length} internal links\n`);
+  if (!silent) {
+    console.log(`  ✅ Created ${SCAVENGERS_FILE}`);
+    console.log(`  📊 Found ${totalOutbound} outbound links across ${Object.keys(links.outbound).length} domains`);
+    console.log(`  🖼️  Found ${links.assets.length} asset links`);
+    console.log(`  🔗 Found ${links.internal.length} internal links\n`);
+  }
 
   return scavengers;
 }
 
+// Show random animal with domain and help hint
+function showSplash() {
+  const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+  const color = randomColor();
+  const helpColor = randomColor();
+
+  console.log(color + animal + colors.reset);
+  console.log();
+  console.log(`  ${colors.bright}${DOMAIN}${colors.reset}`);
+  console.log();
+  console.log(`  ${helpColor}${colors.bright}Type "scavenger help" for commands${colors.reset}`);
+  console.log();
+}
+
 // Display link list
 function showLinkList(scavengers) {
-  console.log(RACCOON);
+  const color = randomColor();
+  console.log(color + ANIMALS[0] + colors.reset);
+  console.log();
   console.log("  SCAVENGER LINK REPORT");
   console.log("  " + "═".repeat(40));
   console.log(`  Project: ${scavengers.project}`);
@@ -218,7 +329,9 @@ function showLinkList(scavengers) {
 
 // Refresh/farm links
 function farmLinks(projectRoot) {
-  console.log(RACCOON);
+  const color = randomColor();
+  console.log(color + ANIMALS[0] + colors.reset);
+  console.log();
   console.log("  🌾 LINK FARMING");
   console.log("  " + "═".repeat(40));
   console.log("  Rescanning project for new links...\n");
@@ -265,8 +378,11 @@ function farmLinks(projectRoot) {
 
 // Break/remove tracking for specific domain
 function breakLinks(projectRoot, target) {
+  const color = randomColor();
+
   if (!target) {
-    console.log(RACCOON);
+    console.log(color + ANIMALS[0] + colors.reset);
+    console.log();
     console.log("  Usage: scavenger link break <domain>");
     console.log("  Example: scavenger link break google.com");
     return;
@@ -274,7 +390,8 @@ function breakLinks(projectRoot, target) {
 
   const scavengersPath = path.join(projectRoot, SCAVENGERS_FILE);
   if (!fs.existsSync(scavengersPath)) {
-    console.log(RACCOON);
+    console.log(color + ANIMALS[0] + colors.reset);
+    console.log();
     console.log("  ⚠️  No scavengers.json found. Run 'scavenger link farm' first.");
     return;
   }
@@ -290,46 +407,84 @@ function breakLinks(projectRoot, target) {
 
     fs.writeFileSync(scavengersPath, JSON.stringify(scavengers, null, 2));
 
-    console.log(RACCOON);
+    console.log(color + ANIMALS[0] + colors.reset);
+    console.log();
     console.log(`  ✅ Removed ${count} links from ${target}`);
   } else {
-    console.log(RACCOON);
+    console.log(color + ANIMALS[0] + colors.reset);
+    console.log();
     console.log(`  ⚠️  Domain '${target}' not found in tracked links.`);
   }
 }
 
-const HELP = `
-${RACCOON}
-  SCAVENGER CLI v0.2.2
-
-  Usage: scavenger <command> [options]
-
-  Commands:
-    link list              List all tracked links from scavengers.json
-    link farm              Scan project and update scavengers.json
-    link break <domain>    Remove domain from tracking
-    agent                  Start scavenger agent (coming soon)
-    sell <price> <vol>     Sell at price/volume (coming soon)
-
-  Options:
-    --help, -h             Show this help
-    --version, -v          Show version
-
-  On first run, creates scavengers.json with all project backlinks.
-`;
+// Detailed help menu
+function showHelp() {
+  const color = randomColor();
+  console.log(color + ANIMALS[0] + colors.reset);
+  console.log();
+  console.log(`  ${colors.bright}SCAVENGER CLI v${VERSION}${colors.reset}`);
+  console.log(`  ${colors.cyan}${DOMAIN}${colors.reset}`);
+  console.log();
+  console.log("  " + "═".repeat(50));
+  console.log();
+  console.log(`  ${colors.bright}${colors.yellow}WHAT IS SCAVENGER?${colors.reset}`);
+  console.log();
+  console.log("  Scavenger tracks all outbound links in your project.");
+  console.log("  Know exactly where your code points to - APIs, CDNs,");
+  console.log("  documentation, and third-party services.");
+  console.log();
+  console.log(`  ${colors.bright}${colors.green}COMMANDS${colors.reset}`);
+  console.log();
+  console.log(`  ${colors.cyan}scavenger link list${colors.reset}`);
+  console.log("      Show all tracked outbound links grouped by domain.");
+  console.log("      Displays summary stats and top domains.");
+  console.log();
+  console.log(`  ${colors.cyan}scavenger link farm${colors.reset}`);
+  console.log("      Rescan your entire project for links.");
+  console.log("      Updates scavengers.json with new/removed links.");
+  console.log("      Run this after adding new dependencies or code.");
+  console.log();
+  console.log(`  ${colors.cyan}scavenger link break <domain>${colors.reset}`);
+  console.log("      Stop tracking a specific domain.");
+  console.log("      Example: scavenger link break analytics.google.com");
+  console.log();
+  console.log(`  ${colors.cyan}scavenger agent${colors.reset} ${colors.yellow}(coming soon)${colors.reset}`);
+  console.log("      AI-powered link analysis and recommendations.");
+  console.log();
+  console.log(`  ${colors.cyan}scavenger sell <price> <volume>${colors.reset} ${colors.yellow}(coming soon)${colors.reset}`);
+  console.log("      Marketplace features for link trading.");
+  console.log();
+  console.log(`  ${colors.bright}${colors.magenta}FILES${colors.reset}`);
+  console.log();
+  console.log("  scavengers.json    Created in project root on first run.");
+  console.log("                     Contains all discovered links.");
+  console.log("                     Commit this to track link changes.");
+  console.log();
+  console.log(`  ${colors.bright}${colors.blue}OPTIONS${colors.reset}`);
+  console.log();
+  console.log("  --help, -h, help   Show this help message");
+  console.log("  --version, -v      Show version number");
+  console.log();
+}
 
 // Main
 const projectRoot = findProjectRoot();
 
-if (!command || command === '--help' || command === '-h') {
-  // Check for scavengers.json on help/no-command
-  loadOrCreateScavengers(projectRoot);
-  console.log(HELP);
+// No command - show splash only
+if (!command) {
+  loadOrCreateScavengers(projectRoot, true);
+  showSplash();
+  process.exit(0);
+}
+
+// Help command
+if (command === 'help' || command === '--help' || command === '-h') {
+  showHelp();
   process.exit(0);
 }
 
 if (command === '--version' || command === '-v') {
-  console.log('scavenger v0.2.2');
+  console.log(`scavenger v${VERSION}`);
   process.exit(0);
 }
 
@@ -342,16 +497,22 @@ if (command === 'link') {
   } else if (subcommand === 'break') {
     breakLinks(projectRoot, args[2]);
   } else {
-    console.log(RACCOON);
+    const color = randomColor();
+    console.log(color + ANIMALS[0] + colors.reset);
+    console.log();
     console.log('  Usage: scavenger link <list|farm|break>');
+    console.log();
+    console.log('  Run "scavenger help" for more info.');
   }
   process.exit(0);
 }
 
 if (command === 'agent') {
-  loadOrCreateScavengers(projectRoot);
-  console.log(RACCOON);
-  console.log("  [AGENT] Coming soon...");
+  loadOrCreateScavengers(projectRoot, true);
+  const color = randomColor();
+  console.log(color + ANIMALS[0] + colors.reset);
+  console.log();
+  console.log(`  ${colors.yellow}[AGENT] Coming soon...${colors.reset}`);
   console.log("  Scavengers are preparing this feature.");
   console.log();
   process.exit(0);
@@ -360,18 +521,21 @@ if (command === 'agent') {
 if (command === 'sell') {
   const price = args[1];
   const volume = args[2];
-  const type = args[3];
-  loadOrCreateScavengers(projectRoot);
-  console.log(RACCOON);
+  loadOrCreateScavengers(projectRoot, true);
+  const color = randomColor();
+  console.log(color + ANIMALS[0] + colors.reset);
+  console.log();
   if (!price || !volume) {
-    console.log('  Usage: scavenger sell <price> <volume> [type]');
+    console.log('  Usage: scavenger sell <price> <volume>');
   } else {
-    console.log(`  [SELL] Coming soon...`);
-    console.log(`  Price: ${price}, Volume: ${volume}${type ? `, Type: ${type}` : ''}`);
+    console.log(`  ${colors.yellow}[SELL] Coming soon...${colors.reset}`);
+    console.log(`  Price: ${price}, Volume: ${volume}`);
   }
+  console.log();
   process.exit(0);
 }
 
-// Unknown command - show help
-loadOrCreateScavengers(projectRoot);
-console.log(HELP);
+// Unknown command - show splash with hint
+showSplash();
+console.log(`  ${colors.red}Unknown command: ${command}${colors.reset}`);
+console.log();
