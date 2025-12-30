@@ -1,0 +1,23 @@
+{
+	"name": "@_scavengers/cli",
+	"version": "0.1.0",
+	"description": "Raccoon ASCII art generator - placeholder for @scavengers",
+	"bin": "./bin/index.js",
+	"files": [
+		"bin",
+		"art"
+	],
+	"keywords": [
+		"raccoon",
+		"ascii",
+		"art",
+		"scavengers",
+		"cli"
+	],
+	"author": "",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/scavengers/cli"
+	}
+}
