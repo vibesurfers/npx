@@ -35,6 +35,18 @@ function findProjectRoot() {
   return process.cwd();
 }
 
+// Get project name from package.json or fall back to directory name
+function getProjectName(projectRoot) {
+  const pkgPath = path.join(projectRoot, "package.json");
+  if (fs.existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+      if (pkg.name) return pkg.name;
+    } catch {}
+  }
+  return path.basename(projectRoot);
+}
+
 // URL regex patterns
 const URL_PATTERNS = [
   /https?:\/\/[^\s"'`<>\]\)]+/g,
@@ -154,7 +166,7 @@ function loadOrCreateScavengers(projectRoot) {
     version: "1.0.0",
     created: new Date().toISOString(),
     updated: new Date().toISOString(),
-    project: path.basename(projectRoot),
+    project: getProjectName(projectRoot),
     summary: {
       totalOutboundLinks: totalOutbound,
       totalDomains: Object.keys(links.outbound).length,
@@ -227,7 +239,7 @@ function farmLinks(projectRoot) {
     version: "1.0.0",
     created: oldScavengers?.created || new Date().toISOString(),
     updated: new Date().toISOString(),
-    project: path.basename(projectRoot),
+    project: getProjectName(projectRoot),
     summary: {
       totalOutboundLinks: totalOutbound,
       totalDomains: Object.keys(links.outbound).length,
@@ -288,7 +300,7 @@ function breakLinks(projectRoot, target) {
 
 const HELP = `
 ${RACCOON}
-  SCAVENGER CLI v0.2.0
+  SCAVENGER CLI v0.2.2
 
   Usage: scavenger <command> [options]
 
@@ -317,7 +329,7 @@ if (!command || command === '--help' || command === '-h') {
 }
 
 if (command === '--version' || command === '-v') {
-  console.log('scavenger v0.2.0');
+  console.log('scavenger v0.2.2');
   process.exit(0);
 }
 

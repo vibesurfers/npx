@@ -1,0 +1,116 @@
+{
+  "version": "1.0.0",
+  "created": "2025-12-30T04:14:44.942Z",
+  "updated": "2025-12-30T04:14:44.943Z",
+  "project": "@_scavengers/cli",
+  "summary": {
+    "totalOutboundLinks": 14,
+    "totalDomains": 12,
+    "totalAssets": 2,
+    "totalInternal": 2
+  },
+  "links": {
+    "outbound": {
+      "github.com": [
+        {
+          "url": "https://github.com/scavengers/cli",
+          "source": "package.json"
+        },
+        {
+          "url": "https://github.com/scavengers/cli/issues",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "api.example.com": [
+        {
+          "url": "https://api.example.com/v1/users",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "docs.example.com": [
+        {
+          "url": "https://docs.example.com/getting-started",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "google.com": [
+        {
+          "url": "https://google.com/search",
+          "source": "test/e2e.test.js"
+        },
+        {
+          "url": "https://google.com/maps",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "api.stripe.com": [
+        {
+          "url": "https://api.stripe.com/v1/charges",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "api.myservice.com": [
+        {
+          "url": "https://api.myservice.com/graphql",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "hooks.slack.com": [
+        {
+          "url": "https://hooks.slack.com/services/xxx",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "cdn.cloudflare.com": [
+        {
+          "url": "https://cdn.cloudflare.com/assets",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "docs.testproject.com": [
+        {
+          "url": "https://docs.testproject.com",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "testproject.com": [
+        {
+          "url": "https://testproject.com",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "api.testproject.com": [
+        {
+          "url": "https://api.testproject.com/docs",
+          "source": "test/e2e.test.js"
+        }
+      ],
+      "support.testproject.com": [
+        {
+          "url": "https://support.testproject.com/contact",
+          "source": "test/e2e.test.js"
+        }
+      ]
+    },
+    "internal": [
+      {
+        "url": "http://localhost:3000/api",
+        "source": "test/e2e.test.js"
+      },
+      {
+        "url": "http://127.0.0.1:8080/health",
+        "source": "test/e2e.test.js"
+      }
+    ],
+    "assets": [
+      {
+        "url": "https://cdn.example.com/logo.png",
+        "source": "test/e2e.test.js"
+      },
+      {
+        "url": "https://assets.example.com/intro.mp4",
+        "source": "test/e2e.test.js"
+      }
+    ]
+  }
+}

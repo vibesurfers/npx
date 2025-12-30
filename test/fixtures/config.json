@@ -1,0 +1,5 @@
+{
+  "apiEndpoint": "https://api.myservice.com/graphql",
+  "webhookUrl": "https://hooks.slack.com/services/xxx",
+  "cdnUrl": "https://cdn.cloudflare.com/assets"
+}
